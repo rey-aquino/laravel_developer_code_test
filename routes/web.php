@@ -16,11 +16,31 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::group(['middleware' => ['auth']], function(){
+    
+    // ------------------------- DASHBOARD -------------------------
+    Route::resource('/dashboard', 'User\UserDashboardController');
 
-Auth::routes();
+    // ------------------------- CUSTOMERS -------------------------
+    Route::resource('/add-customers', 'User\AddCustomerController');
+    Route::resource('/manage-customers', 'User\ManageCustomerController');
 
-Route::get('/home', 'HomeController@index')->name('home');
+    // ------------------------- SUPPLIERS -------------------------
+    Route::resource('/add-suppliers', 'User\AddSupplierController');
+    Route::resource('/manage-suppliers', 'User\ManageSupplierController');
+
+    // ------------------------- MANAGE USER -------------------------
+    Route::resource('/manage-users', 'User\ManageUserController');
+
+    // ------------------------- DEPENDENT DROPDOWN -------------------------
+    Route::get('cities', 'User\CityController@index')
+        ->name('cities.index');
+    Route::get('states', 'User\StateController@index')
+        ->name('states.index');
+
+});
+
+
+
